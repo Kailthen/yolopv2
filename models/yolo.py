@@ -1,44 +1,4 @@
-Hugging Face's logo
-Hugging Face
-Search models, datasets, users...
-Models
-Datasets
-Spaces
-Docs
-Solutions
-Pricing
 
-
-
-Hugging Face is way more fun with friends and colleagues! 🤗 Join an organization
-Spaces:
-
-akhaliq
-/
-yolov7 Copied
-like
-33
-App
-Files and versions
-Community
-5
-yolov7
-/
-models
-/
-yolo.py
-akhaliq's picture
-akhaliq
-add files
-e20a59b
-about 2 months ago
-raw
-history
-blame
-contribute
-delete
-Safe
-25.6 kB
 import argparse
 import logging
 import sys
