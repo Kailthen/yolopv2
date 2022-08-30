@@ -193,4 +193,4 @@ def detect(img,model):
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2"])], gr.Image(type="pil"),title="Yolopv2",examples=[["horses.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>WongKinYiu/yolov7</a> Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=['yolov7',"yolopv2"])], gr.Image(type="pil"),title="Yolopv2",examples=[["horses.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>WongKinYiu/yolov7</a> Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors").launch()
