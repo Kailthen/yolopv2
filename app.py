@@ -59,9 +59,9 @@ def detect(img,model):
     img.save("Inference/test.jpg")
     source, weights, view_img, save_txt, imgsz, trace = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size, opt.trace
     save_img = True  # save inference images
-    webcam = source.isnumeric() or source.endswith('.txt') or source.lower().startswith(
-        ('rtsp://', 'rtmp://', 'http://', 'https://'))
-    print(webcam)
+    #webcam = source.isnumeric() or source.endswith('.txt') or source.lower().startswith(
+        #('rtsp://', 'rtmp://', 'http://', 'https://'))
+    #print(webcam)
     # Directories
     save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))  # increment run
     (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
@@ -86,12 +86,12 @@ def detect(img,model):
 
     # Set Dataloader
     vid_path, vid_writer = None, None
-    if webcam:
-        view_img = check_imshow()
-        cudnn.benchmark = True  # set True to speed up constant image size inference
-        dataset = LoadStreams(source, img_size=imgsz, stride=stride)
-    else:
-        dataset = LoadImages(source, img_size=imgsz, stride=stride)
+    #if webcam:
+        #view_img = check_imshow()
+        #cudnn.benchmark = True  # set True to speed up constant image size inference
+        #dataset = LoadStreams(source, img_size=imgsz, stride=stride)
+    #else:
+    dataset = LoadImages(source, img_size=imgsz, stride=stride)
 
     # Get names and colors
     names = model.module.names if hasattr(model, 'module') else model.names
@@ -119,10 +119,10 @@ def detect(img,model):
         
         # Process detections
         for i, det in enumerate(pred):  # detections per image
-            if webcam:  # batch_size >= 1
-                p, s, im0, frame = path[i], '%g: ' % i, im0s[i].copy(), dataset.count
-            else:
-                p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
+            #if webcam:  # batch_size >= 1
+                #p, s, im0, frame = path[i], '%g: ' % i, im0s[i].copy(), dataset.count
+            #else:
+            p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
 
             p = Path(p)  # to Path
             save_path = str(save_dir / p.name)  # img.jpg
