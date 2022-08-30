@@ -4,6 +4,7 @@ import os
 os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt")
 #os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6e.pt")
 os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6.pt")
+os.system("wget https://github.com/CAIC-AD/YOLOPv2/releases/download/V0.0.1/yolopv2.pt")
 
 import argparse
 import time
@@ -183,4 +184,4 @@ def detect(img,model):
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolov7","yolov7-e6"])], gr.Image(type="pil"),title="Yolov7",examples=[["horses.jpeg", "yolov7"]],description="demo for <a href='https://github.com/WongKinYiu/yolov7' style='text-decoration: underline' target='_blank'>WongKinYiu/yolov7</a> Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolov7","yolopv2"])], gr.Image(type="pil"),title="Yolov7",examples=[["horses.jpeg", "yolov7"]],description="demo for <a href='https://github.com/WongKinYiu/yolov7' style='text-decoration: underline' target='_blank'>WongKinYiu/yolov7</a> Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors").launch()
