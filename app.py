@@ -77,13 +77,9 @@ def detect(img,model):
     nms_time = AverageMeter()
 
     # Load model
-    stride =32
-    model  = torch.jit.load(weights)
-    device = select_device(opt.device)
-    model = model.to(device)
     model = attempt_load(weights, map_location=device)  # load FP32 model
+    stride = int(model.stride.max())  # model stride
     imgsz = check_img_size(imgsz, s=stride)  # check img_size
-
     if half:
         model.half()  # to FP16
 
