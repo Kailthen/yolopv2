@@ -72,13 +72,17 @@ def detect(img,model):
     half = device.type != 'cpu'  # half precision only supported on CUDA
 
     # Load model
-    print(weights)
-    model = attempt_load(weights, map_location=device)  # load FP32 model
-    stride = int(model.stride.max())  # model stride
-    imgsz = check_img_size(imgsz, s=stride)  # check img_size
+    inf_time = AverageMeter()
+    waste_time = AverageMeter()
+    nms_time = AverageMeter()
 
-    #if trace:
-        #model = TracedModel(model, device, opt.img_size)
+    # Load model
+    stride =32
+    model  = torch.jit.load(weights)
+    device = select_device(opt.device)
+    model = model.to(device)
+    model = attempt_load(weights, map_location=device)  # load FP32 model
+    imgsz = check_img_size(imgsz, s=stride)  # check img_size
 
     if half:
         model.half()  # to FP16
