@@ -84,6 +84,9 @@ def detect(img,model):
     #stride = int(model.stride.max())  # model stride
     #imgsz = check_img_size(imgsz, s=stride)  # check img_size
     print(weights)
+    if weights == 'yolop.pt':
+        weights = 'End-to-end.pth'
+        
     if weights == 'yolopv2.pt':
         stride =32
         model  = torch.jit.load(weights,map_location=device)
@@ -191,4 +194,4 @@ def detect(img,model):
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>YOLOPv2</a> YOLOPv2🚀: Better, Faster, Stronger for Panoptic driving Perception").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>YOLOPv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception").launch()
