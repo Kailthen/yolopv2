@@ -83,7 +83,7 @@ def detect(img,model):
     #imgsz = check_img_size(imgsz, s=stride)  # check img_size
     print(weights)
     stride =32
-    model  = torch.jit.load(weights)
+    model  = torch.jit.load(weights,map_location=device)
     print(model)
     imgsz = check_img_size(imgsz, s=stride)
     #model = model.to(device)
