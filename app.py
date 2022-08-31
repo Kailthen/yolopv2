@@ -68,7 +68,7 @@ def detect(img,model):
     (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
     # Initialize
-    set_logging()
+    #set_logging()
     device = select_device(opt.device)
     #print(device)
     half = device.type != 'cpu'  # half precision only supported on CUDA
