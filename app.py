@@ -181,8 +181,9 @@ def detect(img,model):
     waste_time.update(tw2-tw1,img.size(0))
     print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
     print(f'Done. ({time.time() - t0:.3f}s)')
+    print(im0.shape)
 
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolov7"])], gr.Image(type="pil"),title="Yolopv2",examples=[["horses.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>WongKinYiu/yolov7</a> Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolov7"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>WongKinYiu/yolov7</a> Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors").launch()
