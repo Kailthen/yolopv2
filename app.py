@@ -78,14 +78,14 @@ def detect(img,model):
     nms_time = AverageMeter()
 
     # Load model
-    model = attempt_load(weights, map_location=device)  # load FP32 model
-    stride = int(model.stride.max())  # model stride
-    imgsz = check_img_size(imgsz, s=stride)  # check img_size
-
-    #stride =32
-    #model  = torch.jit.load(weights)
-    #print(model)
-
+    #model = attempt_load(weights, map_location=device)  # load FP32 model
+    #stride = int(model.stride.max())  # model stride
+    #imgsz = check_img_size(imgsz, s=stride)  # check img_size
+    print(weights)
+    stride =32
+    model  = torch.jit.load(weights)
+    print(model)
+    imgsz = check_img_size(imgsz, s=stride)
     #model = model.to(device)
     #print(111111111)
   
@@ -192,4 +192,4 @@ def detect(img,model):
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolov7-e6e","yolopv2"])], gr.Image(type="pil"),title="Yolopv2",examples=[["horses.jpeg", "yolov7-e6e"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>WongKinYiu/yolov7</a> Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolov7-e6e","yolopv2"])], gr.Image(type="pil"),title="Yolopv2",examples=[["horses.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>WongKinYiu/yolov7</a> Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors").launch()
