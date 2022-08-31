@@ -69,6 +69,7 @@ def detect(img,model):
     # Initialize
     set_logging()
     device = select_device(opt.device)
+    print(device)
     half = device.type != 'cpu'  # half precision only supported on CUDA
 
     # Load model
