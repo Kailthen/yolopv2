@@ -81,14 +81,11 @@ def detect(img,model):
     print(weights)
     stride =32
     model  = torch.jit.load(weights)
+    print(model)
 
     model = model.to(device)
     print(111111111)
-    
-    
-    if half:
-        model.half()  # to FP16
-
+  
 
     # Set Dataloader
     vid_path, vid_writer = None, None
