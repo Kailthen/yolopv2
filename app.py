@@ -84,24 +84,11 @@ def detect(img,model):
     print(weights)
     stride =32
     model  = torch.jit.load(weights,map_location=device)
-    print(model)
-    imgsz = check_img_size(imgsz, s=stride)
-    #model = model.to(device)
-    #print(111111111)
-  
+    model.eval()
 
     # Set Dataloader
     vid_path, vid_writer = None, None
-    #if webcam:
-        #view_img = check_imshow()
-        #cudnn.benchmark = True  # set True to speed up constant image size inference
-        #dataset = LoadStreams(source, img_size=imgsz, stride=stride)
-    #else:
     dataset = LoadImages(source, img_size=imgsz, stride=stride)
-
-    # Get names and colors
-    names = model.module.names if hasattr(model, 'module') else model.names
-    colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
     # Run inference
     if device.type != 'cpu':
@@ -111,23 +98,32 @@ def detect(img,model):
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
+
         if img.ndimension() == 3:
             img = img.unsqueeze(0)
 
         # Inference
         t1 = time_synchronized()
-        pred = model(img, augment=opt.augment)[0]
-
-        # Apply NMS
-        pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
+        [pred,anchor_grid],seg,ll= model(img)
         t2 = time_synchronized()
 
-        
+        # waste time: the incompatibility of  torch.jit.trace causes extra time consumption in demo version 
+        # but this problem will not appear in offical version 
+        tw1 = time_synchronized()
+        pred = split_for_trace_model(pred,anchor_grid)
+        tw2 = time_synchronized()
+
+        # Apply NMS
+        t3 = time_synchronized()
+        pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
+        t4 = time_synchronized()
+
+        da_seg_mask = driving_area_mask(seg)
+        ll_seg_mask = lane_line_mask(ll)
+
         # Process detections
         for i, det in enumerate(pred):  # detections per image
-            #if webcam:  # batch_size >= 1
-                #p, s, im0, frame = path[i], '%g: ' % i, im0s[i].copy(), dataset.count
-            #else:
+          
             p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
 
             p = Path(p)  # to Path
@@ -142,7 +138,7 @@ def detect(img,model):
                 # Print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
-                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+                    #s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
@@ -152,22 +148,18 @@ def detect(img,model):
                         with open(txt_path + '.txt', 'a') as f:
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
-                    if save_img or view_img:  # Add bbox to image
-                        label = f'{names[int(cls)]} {conf:.2f}'
-                        plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=3)
+                    if save_img :  # Add bbox to image
+                        plot_one_box(xyxy, im0, line_thickness=3)
 
-            # Print time (inference + NMS)
-            #print(f'{s}Done. ({t2 - t1:.3f}s)')
-
-            # Stream results
-            if view_img:
-                cv2.imshow(str(p), im0)
-                cv2.waitKey(1)  # 1 millisecond
+            # Print time (inference)
+            print(f'{s}Done. ({t2 - t1:.3f}s)')
+            show_seg_result(im0, (da_seg_mask,ll_seg_mask), is_demo=True)
 
             # Save results (image with detections)
             if save_img:
                 if dataset.mode == 'image':
                     cv2.imwrite(save_path, im0)
+                    print(f" The image with the result is saved in: {save_path}")
                 else:  # 'video' or 'stream'
                     if vid_path != save_path:  # new video
                         vid_path = save_path
@@ -175,18 +167,19 @@ def detect(img,model):
                             vid_writer.release()  # release previous video writer
                         if vid_cap:  # video
                             fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                            w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                            h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                            #w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                            #h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                            w,h = im0.shape[1], im0.shape[0]
                         else:  # stream
                             fps, w, h = 30, im0.shape[1], im0.shape[0]
                             save_path += '.mp4'
                         vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     vid_writer.write(im0)
 
-    if save_txt or save_img:
-        s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
-        #print(f"Results saved to {save_dir}{s}")
-
+    inf_time.update(t2-t1,img.size(0))
+    nms_time.update(t4-t3,img.size(0))
+    waste_time.update(tw2-tw1,img.size(0))
+    print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
     print(f'Done. ({time.time() - t0:.3f}s)')
 
     return Image.fromarray(im0[:,:,::-1])
