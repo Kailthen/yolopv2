@@ -80,8 +80,7 @@ def detect(img,model):
     print(weights)
     stride =32
     model  = torch.jit.load(weights)
-    device = select_device(opt.device)
-    half = device.type != 'cpu'  # half precision only supported on CUDA
+
     model = model.to(device)
     print(111111111)
     
