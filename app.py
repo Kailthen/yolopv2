@@ -80,6 +80,88 @@ def detect(img,model):
     #stride = int(model.stride.max())  # model stride
     #imgsz = check_img_size(imgsz, s=stride)  # check img_size
     print(weights)
+    if weights == 'yolopv2.pt':
+        stride =32
+        model  = torch.jit.load(weights,map_location=device)
+        model.eval()
+    
+        # Set Dataloader
+        vid_path, vid_writer = None, None
+        dataset = LoadImages(source, img_size=imgsz, stride=stride)
+    
+        # Run inference
+        if device.type != 'cpu':
+            model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
+        t0 = time.time()
+        for path, img, im0s, vid_cap in dataset:
+            img = torch.from_numpy(img).to(device)
+            img = img.half() if half else img.float()  # uint8 to fp16/32
+            img /= 255.0  # 0 - 255 to 0.0 - 1.0
+            print(img.shape)
+    
+            if img.ndimension() == 3:
+                img = img.unsqueeze(0)
+    
+            # Inference
+            t1 = time_synchronized()
+            [pred,anchor_grid],seg,ll= model(img)
+            t2 = time_synchronized()
+    
+            # waste time: the incompatibility of  torch.jit.trace causes extra time consumption in demo version 
+            # but this problem will not appear in offical version 
+            tw1 = time_synchronized()
+            pred = split_for_trace_model(pred,anchor_grid)
+            tw2 = time_synchronized()
+    
+            # Apply NMS
+            t3 = time_synchronized()
+            pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
+            t4 = time_synchronized()
+    
+            da_seg_mask = driving_area_mask(seg)
+            ll_seg_mask = lane_line_mask(ll)
+                
+            print(da_seg_mask.shape)
+            # Process detections
+            for i, det in enumerate(pred):  # detections per image
+              
+                p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
+    
+                p = Path(p)  # to Path
+                #save_path = str(save_dir / p.name)  # img.jpg
+                #txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
+                s += '%gx%g ' % img.shape[2:]  # print string
+                gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
+                if len(det):
+                    # Rescale boxes from img_size to im0 size
+                    det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
+    
+                    # Print results
+                    #for c in det[:, -1].unique():
+                        #n = (det[:, -1] == c).sum()  # detections per class
+                        #s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+    
+                    # Write results
+                    for *xyxy, conf, cls in reversed(det):
+                        if save_txt:  # Write to file
+                            xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                            line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
+               
+    
+                        if save_img :  # Add bbox to image
+                            plot_one_box(xyxy, im0, line_thickness=3)
+    
+                # Print time (inference)
+                print(f'{s}Done. ({t2 - t1:.3f}s)')
+                show_seg_result(im0, (da_seg_mask,ll_seg_mask), is_demo=True)
+    
+      
+    #inf_time.update(t2-t1,img.size(0))
+    #nms_time.update(t4-t3,img.size(0))
+    #waste_time.update(tw2-tw1,img.size(0))
+    #print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
+    #print(f'Done. ({time.time() - t0:.3f}s)')
+    #print(im0.shape)
     if weights == 'yolop.pt':
         weights = 'End-to-end.pth'
         print(weights)
@@ -183,94 +265,6 @@ def detect(img,model):
 
         print('Done. (%.3fs)' % (time.time() - t0))
         print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
-
-
-  
-        
-    if weights == 'yolopv2.pt':
-  
-
-        stride =32
-        model  = torch.jit.load(weights,map_location=device)
-        model.eval()
-    
-        # Set Dataloader
-        vid_path, vid_writer = None, None
-        dataset = LoadImages(source, img_size=imgsz, stride=stride)
-    
-        # Run inference
-        if device.type != 'cpu':
-            model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
-        t0 = time.time()
-        for path, img, im0s, vid_cap in dataset:
-            img = torch.from_numpy(img).to(device)
-            img = img.half() if half else img.float()  # uint8 to fp16/32
-            img /= 255.0  # 0 - 255 to 0.0 - 1.0
-            print(img.shape)
-    
-            if img.ndimension() == 3:
-                img = img.unsqueeze(0)
-    
-            # Inference
-            t1 = time_synchronized()
-            [pred,anchor_grid],seg,ll= model(img)
-            t2 = time_synchronized()
-    
-            # waste time: the incompatibility of  torch.jit.trace causes extra time consumption in demo version 
-            # but this problem will not appear in offical version 
-            tw1 = time_synchronized()
-            pred = split_for_trace_model(pred,anchor_grid)
-            tw2 = time_synchronized()
-    
-            # Apply NMS
-            t3 = time_synchronized()
-            pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
-            t4 = time_synchronized()
-    
-            da_seg_mask = driving_area_mask(seg)
-            ll_seg_mask = lane_line_mask(ll)
-                
-            print(da_seg_mask.shape)
-            # Process detections
-            for i, det in enumerate(pred):  # detections per image
-              
-                p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
-    
-                p = Path(p)  # to Path
-                #save_path = str(save_dir / p.name)  # img.jpg
-                #txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
-                s += '%gx%g ' % img.shape[2:]  # print string
-                gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
-                if len(det):
-                    # Rescale boxes from img_size to im0 size
-                    det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-    
-                    # Print results
-                    #for c in det[:, -1].unique():
-                        #n = (det[:, -1] == c).sum()  # detections per class
-                        #s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
-    
-                    # Write results
-                    for *xyxy, conf, cls in reversed(det):
-                        if save_txt:  # Write to file
-                            xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                            line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
-               
-    
-                        if save_img :  # Add bbox to image
-                            plot_one_box(xyxy, im0, line_thickness=3)
-    
-                # Print time (inference)
-                print(f'{s}Done. ({t2 - t1:.3f}s)')
-                show_seg_result(im0, (da_seg_mask,ll_seg_mask), is_demo=True)
-    
-      
-    #inf_time.update(t2-t1,img.size(0))
-    #nms_time.update(t4-t3,img.size(0))
-    #waste_time.update(tw2-tw1,img.size(0))
-    #print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
-    #print(f'Done. ({time.time() - t0:.3f}s)')
-    #print(im0.shape)
     
     return Image.fromarray(im0[:,:,::-1])
 
