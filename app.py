@@ -160,7 +160,7 @@ def detect(img,model):
                 print(f'{s}Done. ({t2 - t1:.3f}s)')
                 show_seg_result(im0, (da_seg_mask,ll_seg_mask), is_demo=True)
                 
-     elif weights == 'yolop.pt':
+    if weights == 'yolop.pt':
         weights = 'End-to-end.pth'
         print(weights)
     
