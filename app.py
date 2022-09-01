@@ -103,11 +103,11 @@ def detect(img,model):
                     normalize,
                 ])
         model = get_net(cfg)
-        checkpoint = torch.load(opt.weights, map_location= device)
+        checkpoint = torch.load(weights, map_location= device)
         model.load_state_dict(checkpoint['state_dict'])
         model = model.to(device)
 
-        dataset = LoadImages(opt.source, img_size=opt.img_size)
+        dataset = LoadImages(source, img_size=imgsz)
         bs = 1  # batch_size
 
         # Get names and colors
@@ -118,7 +118,7 @@ def detect(img,model):
         t0 = time.time()
     
         vid_path, vid_writer = None, None
-        img = torch.zeros((1, 3, opt.img_size, opt.img_size), device=device)  # init img
+        img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
         _ = model(img.half() if half else img) if device.type != 'cpu' else None  # run once
         model.eval()
     
