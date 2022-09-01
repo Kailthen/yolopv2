@@ -22,7 +22,12 @@ from numpy import random
     #scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
 #from utils.plots import plot_one_box
 #from utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
-
+from utils.functions import \
+        time_synchronized,select_device, increment_path,\
+        scale_coords,xyxy2xywh,non_max_suppression,split_for_trace_model,\
+        driving_area_mask,lane_line_mask,plot_one_box,show_seg_result,\
+        AverageMeter,\
+        LoadImages
 
 from PIL import Image
  
