@@ -147,7 +147,7 @@ def detect(img,model):
             nms_time.update(t4-t3,img.size(0))
             det=det_pred[0]
     
-            save_path = str(save_dir +'/'+ Path(path).name)
+            save_path = str(save_dir +'/'+ 'img.jpg')
     
             _, _, height, width = img.shape
             h,w,_=img_det.shape
