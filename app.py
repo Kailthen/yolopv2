@@ -84,9 +84,8 @@ def detect(img,model):
     #model = attempt_load(weights, map_location=device)  # load FP32 model
     #stride = int(model.stride.max())  # model stride
     #imgsz = check_img_size(imgsz, s=stride)  # check img_size
-    print(weights)
     if weights == 'yolopv2.pt':
-        print(weights)
+ 
         stride =32
         model  = torch.jit.load(weights,map_location=device)
         model.eval()
@@ -99,6 +98,7 @@ def detect(img,model):
 
         t0 = time.time()
         for path, img, im0s, vid_cap in dataset:
+            print(img.shape)
             img = torch.from_numpy(img).to(device)
             img = img.half() if half else img.float()  # uint8 to fp16/32
             img /= 255.0  # 0 - 255 to 0.0 - 1.0
@@ -197,6 +197,7 @@ def detect(img,model):
     
   
         for i, (path, img, img_det, vid_cap,shapes) in tqdm(enumerate(dataset),total = len(dataset)):
+            print(img.shape)
             img = transform(img).to(device)
             img = img.half() if half else img.float()  # uint8 to fp16/32
             if img.ndimension() == 3:
