@@ -158,6 +158,9 @@ def detect(img,model):
                 # Print time (inference)
                 print(f'{s}Done. ({t2 - t1:.3f}s)')
                 show_seg_result(im0, (da_seg_mask,ll_seg_mask), is_demo=True)
+        inf_time.update(t2-t1,img.size(0))
+        nms_time.update(t4-t3,img.size(0))
+        #waste_time.update(tw2-tw1,img.size(0))
         print('Done. (%.3fs)' % (time.time() - t0))
         print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
     
