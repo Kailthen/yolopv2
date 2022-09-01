@@ -84,6 +84,7 @@ def detect(img,model):
     print(weights)
     if weights == 'yolop.pt':
         weights = 'End-to-end.pth'
+        print(weights)
         from lib.config import cfg
         #from lib.config import update_config
         #from lib.utils.utils import create_logger, select_device, time_synchronized
@@ -104,6 +105,7 @@ def detect(img,model):
                 ])
         model = get_net(cfg)
         checkpoint = torch.load(weights, map_location= device)
+        print(checkpoint)
         model.load_state_dict(checkpoint['state_dict'])
         model = model.to(device)
 
