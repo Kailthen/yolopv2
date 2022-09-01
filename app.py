@@ -158,6 +158,9 @@ def detect(img,model):
                 # Print time (inference)
                 print(f'{s}Done. ({t2 - t1:.3f}s)')
                 show_seg_result(im0, (da_seg_mask,ll_seg_mask), is_demo=True)
+        print('Done. (%.3fs)' % (time.time() - t0))
+        print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
+    
                 
     if weights == 'yolop.pt':
         weights = 'End-to-end.pth'
