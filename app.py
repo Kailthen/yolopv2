@@ -105,7 +105,7 @@ def detect(img,model):
                 ])
         model = get_net(cfg)
         checkpoint = torch.load(weights, map_location= device)
-        print(checkpoint)
+        #print(checkpoint)
         model.load_state_dict(checkpoint['state_dict'])
         model = model.to(device)
 
@@ -147,7 +147,7 @@ def detect(img,model):
             nms_time.update(t4-t3,img.size(0))
             det=det_pred[0]
     
-            save_path = str(opt.save_dir +'/'+ Path(path).name) if dataset.mode != 'stream' else str(opt.save_dir + '/' + "web.mp4")
+            save_path = str(save_dir +'/'+ Path(path).name)
     
             _, _, height, width = img.shape
             h,w,_=img_det.shape
