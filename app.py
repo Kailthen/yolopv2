@@ -90,7 +90,7 @@ def detect(img,model):
         from lib.models import get_net
         from lib.dataset.DemoDataset import LoadImages, LoadStreams
         from lib.core.general import non_max_suppression, scale_coords
-        from lib.utils import plot_one_box,show_seg_result
+        from lib.utils.plot import plot_one_box,show_seg_result
         #from lib.core.postprocess import morphological_process, connect_lane
         from tqdm import tqdm
         normalize = transforms.Normalize(
