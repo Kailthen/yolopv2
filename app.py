@@ -85,7 +85,7 @@ def detect(img,model):
     #stride = int(model.stride.max())  # model stride
     #imgsz = check_img_size(imgsz, s=stride)  # check img_size
     if weights == 'yolopv2.pt':
- 
+        print(weights)
         stride =32
         model  = torch.jit.load(weights,map_location=device)
         model.eval()
