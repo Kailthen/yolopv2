@@ -182,7 +182,7 @@ def detect(img,model):
      
    
         im0 = img_det
-        print('Results saved to %s' % Path(opt.save_dir))
+
         print('Done. (%.3fs)' % (time.time() - t0))
         print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
 
