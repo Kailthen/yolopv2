@@ -91,7 +91,7 @@ def detect(img,model):
         from lib.dataset import LoadImages, LoadStreams
         from lib.core.general import non_max_suppression, scale_coords
         from lib.utils import plot_one_box,show_seg_result
-        from lib.core.postprocess import morphological_process, connect_lane
+        #from lib.core.postprocess import morphological_process, connect_lane
         from tqdm import tqdm
         normalize = transforms.Normalize(
         mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
