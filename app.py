@@ -188,12 +188,7 @@ def detect(img,model):
   
         
     if weights == 'yolopv2.pt':
-        from utils.functions import \
-        time_synchronized,select_device, increment_path,\
-        scale_coords,xyxy2xywh,non_max_suppression,split_for_trace_model,\
-        driving_area_mask,lane_line_mask,plot_one_box,show_seg_result,\
-        AverageMeter,\
-        LoadImages
+  
 
         stride =32
         model  = torch.jit.load(weights,map_location=device)
