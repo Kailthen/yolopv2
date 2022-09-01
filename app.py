@@ -195,7 +195,7 @@ def detect(img,model):
     
         vid_path, vid_writer = None, None
         img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
-        _ = model(img.half() if half else img) if device.type != 'cpu' else None  # run once
+        _ = model(img.half() if half else img)   # run once
         model.eval()
     
   
@@ -273,4 +273,4 @@ def detect(img,model):
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>yolopv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception (but maybe not fast on cpu:joy:)").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>yolopv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception ").launch()
