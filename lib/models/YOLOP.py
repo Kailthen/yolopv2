@@ -8,14 +8,14 @@ sys.path.append(os.getcwd())
 #sys.path.append("lib/models")
 #sys.path.append("lib/utils")
 #sys.path.append("/workspace/wh/projects/DaChuang")
-from lib.utils import initialize_weights
+#from lib.utils import initialize_weights
 # from lib.models.common2 import DepthSeperabelConv2d as Conv
 # from lib.models.common2 import SPP, Bottleneck, BottleneckCSP, Focus, Concat, Detect
 from lib.models.common import Conv, SPP, Bottleneck, BottleneckCSP, Focus, Concat, Detect, SharpenConv
 from torch.nn import Upsample
 from lib.utils import check_anchor_order
 from lib.core.evaluate import SegmentationMetric
-from lib.utils.utils import time_synchronized
+#from lib.utils.utils import time_synchronized
 
 """
 MCnet_SPP = [
@@ -498,7 +498,7 @@ class MCnet(nn.Module):
             self.stride = Detector.stride
             self._initialize_biases()
         
-        initialize_weights(self)
+        #initialize_weights(self)
 
     def forward(self, x):
         cache = []
