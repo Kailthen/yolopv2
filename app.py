@@ -96,8 +96,7 @@ def detect(img,model):
         dataset = LoadImages(source, img_size=imgsz, stride=stride)
     
         # Run inference
-        if device.type != 'cpu':
-            model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
+
         t0 = time.time()
         for path, img, im0s, vid_cap in dataset:
             img = torch.from_numpy(img).to(device)
@@ -153,7 +152,6 @@ def detect(img,model):
                             xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                             line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
                
-    
                         if save_img :  # Add bbox to image
                             plot_one_box(xyxy, im0, line_thickness=3)
     
@@ -268,4 +266,4 @@ def detect(img,model):
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>YOLOPv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolop","yolopv2"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>YOLOPv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception").launch()
