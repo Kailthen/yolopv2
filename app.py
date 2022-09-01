@@ -147,7 +147,7 @@ def detect(img,model):
             nms_time.update(t4-t3,img.size(0))
             det=det_pred[0]
     
-            save_path = str(save_dir +'/'+ 'img.jpg')
+            #save_path = str(save_dir +'/'+ 'img.jpg')
     
             _, _, height, width = img.shape
             h,w,_=img_det.shape
@@ -179,24 +179,8 @@ def detect(img,model):
                     label_det_pred = f'{names[int(cls)]} {conf:.2f}'
                     plot_one_box(xyxy, img_det , label=label_det_pred, color=colors[int(cls)], line_thickness=2)
             
-            if dataset.mode == 'images':
-                cv2.imwrite(save_path,img_det)
-    
-            elif dataset.mode == 'video':
-                if vid_path != save_path:  # new video
-                    vid_path = save_path
-                    if isinstance(vid_writer, cv2.VideoWriter):
-                        vid_writer.release()  # release previous video writer
-    
-                    fourcc = 'mp4v'  # output video codec
-                    fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                    h,w,_=img_det.shape
-                    vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*fourcc), fps, (w, h))
-                vid_writer.write(img_det)
-            
-            else:
-                cv2.imshow('image', img_det)
-                cv2.waitKey(1)  # 1 millisecond
+     
+   
         im0 = img_det
         print('Results saved to %s' % Path(opt.save_dir))
         print('Done. (%.3fs)' % (time.time() - t0))
