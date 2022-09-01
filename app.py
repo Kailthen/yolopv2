@@ -273,4 +273,4 @@ def detect(img,model):
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>yolopv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>yolopv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception (but maybe not fast on cpu:joy:)").launch()
