@@ -22,7 +22,8 @@ from lib.models import get_net
 import torchvision.transforms as transforms
 from lib.dataset.DemoDataset import LoadImages as LoadImages1
 #from lib.core.general import non_max_suppression, scale_coords 
-from lib.utils.plot import plot_one_box,show_seg_result as plot_one_box1,show_seg_result1
+from lib.utils.plot import plot_one_box as plot_one_box1
+from lib.utils.plot import show_seg_result as show_seg_result1
 from tqdm import tqdm
 
 from utils.functions import \
