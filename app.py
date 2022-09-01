@@ -61,8 +61,8 @@ def detect(img,model):
         #('rtsp://', 'rtmp://', 'http://', 'https://'))
     #print(webcam)
     # Directories
-    save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))  # increment run
-    (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
+    #save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))  # increment run
+    #(save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
     # Initialize
     #set_logging()
@@ -242,8 +242,8 @@ def detect(img,model):
                 p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
     
                 p = Path(p)  # to Path
-                save_path = str(save_dir / p.name)  # img.jpg
-                txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
+                #save_path = str(save_dir / p.name)  # img.jpg
+                #txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
                 s += '%gx%g ' % img.shape[2:]  # print string
                 gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
                 if len(det):
@@ -260,8 +260,7 @@ def detect(img,model):
                         if save_txt:  # Write to file
                             xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                             line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
-                            with open(txt_path + '.txt', 'a') as f:
-                                f.write(('%g ' * len(line)).rstrip() % line + '\n')
+               
     
                         if save_img :  # Add bbox to image
                             plot_one_box(xyxy, im0, line_thickness=3)
@@ -270,27 +269,7 @@ def detect(img,model):
                 print(f'{s}Done. ({t2 - t1:.3f}s)')
                 show_seg_result(im0, (da_seg_mask,ll_seg_mask), is_demo=True)
     
-                # Save results (image with detections)
-                if save_img:
-                    if dataset.mode == 'image':
-                        cv2.imwrite(save_path, im0)
-                        print(f" The image with the result is saved in: {save_path}")
-                    else:  # 'video' or 'stream'
-                        if vid_path != save_path:  # new video
-                            vid_path = save_path
-                            if isinstance(vid_writer, cv2.VideoWriter):
-                                vid_writer.release()  # release previous video writer
-                            if vid_cap:  # video
-                                fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                                #w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                                #h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                                w,h = im0.shape[1], im0.shape[0]
-                            else:  # stream
-                                fps, w, h = 30, im0.shape[1], im0.shape[0]
-                                save_path += '.mp4'
-                            vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
-                        vid_writer.write(im0)
-
+      
     #inf_time.update(t2-t1,img.size(0))
     #nms_time.update(t4-t3,img.size(0))
     #waste_time.update(tw2-tw1,img.size(0))
