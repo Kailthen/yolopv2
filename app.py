@@ -81,6 +81,7 @@ def detect(img,model):
     #imgsz = check_img_size(imgsz, s=stride)  # check img_size
     print(weights)
     if weights == 'yolopv2.pt':
+        print(weights)
         stride =32
         model  = torch.jit.load(weights,map_location=device)
         model.eval()
@@ -162,7 +163,7 @@ def detect(img,model):
     #print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
     #print(f'Done. ({time.time() - t0:.3f}s)')
     #print(im0.shape)
-    if weights == 'yolop.pt':
+    elif weights == 'yolop.pt':
         weights = 'End-to-end.pth'
         print(weights)
         from lib.config import cfg
