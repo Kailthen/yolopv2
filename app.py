@@ -1,7 +1,7 @@
 import gradio as gr
 import os
 
-os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt")
+#os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt")
 os.system("wget https://github.com/hustvl/YOLOP/raw/main/weights/End-to-end.pth")
 #os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6e.pt")
 #os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6.pt")
@@ -22,13 +22,6 @@ from numpy import random
     #scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
 #from utils.plots import plot_one_box
 #from utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
-
-from utils.functions import \
-    time_synchronized,select_device, increment_path,\
-    scale_coords,xyxy2xywh,non_max_suppression,split_for_trace_model,\
-    driving_area_mask,lane_line_mask,plot_one_box,show_seg_result,\
-    AverageMeter,\
-    LoadImages
 
 
 from PIL import Image
@@ -190,6 +183,13 @@ def detect(img,model):
   
         
     if weights == 'yolopv2.pt':
+        from utils.functions import \
+        time_synchronized,select_device, increment_path,\
+        scale_coords,xyxy2xywh,non_max_suppression,split_for_trace_model,\
+        driving_area_mask,lane_line_mask,plot_one_box,show_seg_result,\
+        AverageMeter,\
+        LoadImages
+
         stride =32
         model  = torch.jit.load(weights,map_location=device)
         model.eval()
@@ -296,4 +296,4 @@ def detect(img,model):
     return Image.fromarray(im0[:,:,::-1])
 
    
-gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolop"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>YOLOPv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception").launch()
+gr.Interface(detect,[gr.Image(type="pil"),gr.Dropdown(choices=["yolopv2","yolop"])], gr.Image(type="pil"),title="Yolopv2",examples=[["example.jpeg", "yolopv2"]],description="demo for <a href='https://github.com/CAIC-AD/YOLOPv2' style='text-decoration: underline' target='_blank'>YOLOPv2</a> 🚀: Better, Faster, Stronger for Panoptic driving Perception").launch()
