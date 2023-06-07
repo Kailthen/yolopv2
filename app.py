@@ -2,10 +2,10 @@ import gradio as gr
 import os
 
 #os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt")
-os.system("wget https://github.com/hustvl/YOLOP/raw/main/weights/End-to-end.pth")
+# os.system("wget -c https://github.com/hustvl/YOLOP/raw/main/weights/End-to-end.pth")
 #os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6e.pt")
 #os.system("wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6.pt")
-os.system("wget https://github.com/CAIC-AD/YOLOPv2/releases/download/V0.0.1/yolopv2.pt")
+# os.system("wget -c https://github.com/CAIC-AD/YOLOPv2/releases/download/V0.0.1/yolopv2.pt")
 
 import argparse
 import time
@@ -45,7 +45,7 @@ def detect(img,model):
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
-    parser.add_argument('--device', default='', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
+    parser.add_argument('--device', default='0', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--view-img', action='store_true', help='display results')
     parser.add_argument('--save-txt', action='store_true', help='save results to *.txt')
     parser.add_argument('--save-conf', action='store_true', help='save confidences in --save-txt labels')
@@ -88,6 +88,8 @@ def detect(img,model):
         print(weights)
         stride =32
         model  = torch.jit.load(weights,map_location=device)
+        if half:
+            model.half()
         model.eval()
     
         # Set Dataloader
